@@ -6,7 +6,7 @@ import { validarJWT } from '../middleware/validarJWT.js';
 import { validarCampos } from '../middleware/validar-campos.js';
 import { aprendicesHelper } from '../helpers/Aprendices.js';
 import { bitacoraHelper } from '../helpers/Bitacora.js';
-import { fichasHelper } from '../helpers/fichas.js';
+import { fichasHelper } from '../helpers/Fichas.js';
 const router = express.Router();
 
 router.post('/insertar',
