@@ -1,4 +1,4 @@
-import Aprendices from '../models/aprendices.js';
+import Aprendices from '../models/Aprendices.js';
 import Ficha  from '../models/fichas.js';
 
 const httpAprendiz = {
