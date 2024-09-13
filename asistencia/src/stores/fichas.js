@@ -11,7 +11,7 @@ export const useFichaStore = defineStore(
 
     const listarFichas = async () => {
       try {
-        let r = await axios.get("http://localhost:5037/api/Fichas/listar", 
+        let r = await axios.get("https://back-asistenciadespliegue.onrender.com/api/Fichas/listar", 
           
           {headers: {
             "x-token": useUsuarios.xtoken,
@@ -30,7 +30,7 @@ export const useFichaStore = defineStore(
       console.log("ID de la ficha:", id);
       try {
         let r = await axios.put(
-          `http://localhost:5037/api/Fichas/activarDesactivar/${id}`,
+          `https://back-asistenciadespliegue.onrender.com/api/Fichas/activarDesactivar/${id}`,
           {
             headers: {
               "x-token": useUsuarios.xtoken,
@@ -82,7 +82,7 @@ export const useFichaStore = defineStore(
     const guardarFicha = async (cod, nom) => {
       try {
         let r = await axios.post(
-          "http://localhost:5037/api/Fichas/insertar",
+          "https://back-asistenciadespliegue.onrender.com/api/Fichas/insertar",
           {
             codigo: cod,
             nombre: nom,
@@ -118,7 +118,7 @@ export const useFichaStore = defineStore(
       console.log(id);
       try {
         let r = await axios.put(
-          `http://localhost:5037/api/Fichas/editar/${id}`,
+          `https://back-asistenciadespliegue.onrender.com/api/Fichas/editar/${id}`,
           { codigo: cod, nombre: nom },
           {
             headers: {
@@ -149,7 +149,7 @@ export const useFichaStore = defineStore(
     const eliminar = async (id) => {
       try {
         let r = await axios.delete(
-          `http://localhost:5037/api/Fichas/eliminar/${id}`,
+          `https://back-asistenciadespliegue.onrender.com/api/Fichas/eliminar/${id}`,
           {
             headers: {
               "x-token": useUsuarios.xtoken,

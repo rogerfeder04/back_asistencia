@@ -12,7 +12,7 @@ export const useAprendizStore = defineStore("aprendiz", () => {
   
   const listarAprendices = async () => {
     try {
-      let r = await axios.get("http://localhost:5037/api/Aprendices/listar",
+      let r = await axios.get("https://back-asistenciadespliegue.onrender.com/api/Aprendices/listar",
         {headers:{
           "x-token":useUsuarios.xtoken
           }}
@@ -27,7 +27,7 @@ export const useAprendizStore = defineStore("aprendiz", () => {
 
   const listarXId = async () => {
     try {
-      let r = await axios.get(`http://localhost:5037/api/Aprendices/listar2/${id}`);
+      let r = await axios.get(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/listar2/${id}`);
       console.log(r);
       return r;
     } catch (error) {
@@ -39,7 +39,7 @@ export const useAprendizStore = defineStore("aprendiz", () => {
   const activarDesactivarAprendiz = async (id) => {
     console.log(id);
     try {
-      let r = await axios.put(`http://localhost:5037/api/Aprendices/activarDesactivar/${id}`);
+      let r = await axios.put(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/activarDesactivar/${id}`);
       console.log("Respuesta del servidor:", r);
   
       // Suponiendo que el mensaje indica si la ficha se activó o desactivó
@@ -85,7 +85,7 @@ export const useAprendizStore = defineStore("aprendiz", () => {
     console.log(num,doc,nom,ema,tel);
     
     try {
-      let r = await axios.post("http://localhost:5037/api/Aprendices/insertaraprendiz", {
+      let r = await axios.post("https://back-asistenciadespliegue.onrender.com/api/Aprendices/insertaraprendiz", {
         IdFicha: num,
         cc: doc,
         nombre: nom,
@@ -118,7 +118,7 @@ export const useAprendizStore = defineStore("aprendiz", () => {
   const editarAprendiz = async (id,num,doc,nom,ema,tel) => {
     console.log(id);
     try {
-      let r = await axios.put(`http://localhost:5037/api/Aprendices/editarAprendiz/${id}`,
+      let r = await axios.put(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/editarAprendiz/${id}`,
       {IdFicha:num,cc: doc, nombre: nom, email: ema, telefono: tel}
       );
       console.log(r);
@@ -143,7 +143,7 @@ export const useAprendizStore = defineStore("aprendiz", () => {
 
   const eliminar = async (id) =>{
     try {
-      let r = await axios.delete(`http://localhost:5037/api/Aprendices/Eliminar/${id}`);
+      let r = await axios.delete(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/Eliminar/${id}`);
       console.log(r);
       Notify.create({
         color: "positive",

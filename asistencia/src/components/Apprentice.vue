@@ -175,7 +175,7 @@ async function activar(id) {
 async function crearFicha() {
   try {
     // Buscar el ID de la ficha usando el nombre
-    const fichaRes = await axios.get(`http://localhost:5037/api/Aprendices/ListarIdNombre/${num.value}`);
+    const fichaRes = await axios.get(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/ListarIdNombre/${num.value}`);
     const fichaId = fichaRes.data.fichaId;
 
     // Asegúrate de que la ficha se encontró

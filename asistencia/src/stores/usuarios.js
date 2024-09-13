@@ -14,7 +14,7 @@ export const useUsuariosStore = defineStore("usuario", () => {
     const listarUsuarios = async () => {
       console.log(xtoken.value);
       try {
-        let r = await axios.get("http://localhost:5037/api/Usuarios/listar",
+        let r = await axios.get("https://back-asistenciadespliegue.onrender.com/api/Usuarios/listar",
 
           {headers: {
             "x-token": xtoken.value,
@@ -33,7 +33,7 @@ export const useUsuariosStore = defineStore("usuario", () => {
       console.log(id);
       try {
         let r = await axios.put(
-          `http://localhost:5037/api/Usuarios/editar/${id}`,
+          `https://back-asistenciadespliegue.onrender.com/api/Usuarios/editar/${id}`,
           { email: ema, nombre: nom },
           {
             headers: {
@@ -63,7 +63,7 @@ export const useUsuariosStore = defineStore("usuario", () => {
 
     const login = async (email, password) => {
       try {
-        let r = await axios.post("http://localhost:5037/api/Usuarios/login", {
+        let r = await axios.post("https://back-asistenciadespliegue.onrender.com/api/Usuarios/login", {
           email: email,
           password: password,
         });
@@ -83,7 +83,7 @@ export const useUsuariosStore = defineStore("usuario", () => {
     const guardarFicha = async (ema, nom) => {
       try {
         let r = await axios.post(
-          "http://localhost:5037/api/Usuarios/insertarUsuario",
+          "https://back-asistenciadespliegue.onrender.com/api/Usuarios/insertarUsuario",
           {
             email: ema,
             nombre: nom,
@@ -113,7 +113,7 @@ export const useUsuariosStore = defineStore("usuario", () => {
     const activarDesactivarUsuarios = async (id) => {
       try {
         let r = await axios.put(
-          `http://localhost:5037/api/Usuarios/activarDesactivar/${id}`,
+          `https://back-asistenciadespliegue.onrender.com/api/Usuarios/activarDesactivar/${id}`,
           // {
           //   headers: {
           //     "x-token": useUsuarios.xtoken,

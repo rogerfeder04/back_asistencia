@@ -12,7 +12,7 @@ export const useBitacoraStore = defineStore("bitacora", () => {
   // Actualizar estado
   const actualizarEstado = async (id, estado) => {  // Cambiar aquí para aceptar 'estado'
     try {
-      let r = await axios.put(`http://localhost:5037/api/Bitacoras/estado/${id}`, { estado },
+      let r = await axios.put(`https://back-asistenciadespliegue.onrender.com/api/Bitacoras/estado/${id}`, { estado },
         {headers:{
           "x-token":useUsuarios.xtoken
         }}
@@ -33,7 +33,7 @@ export const useBitacoraStore = defineStore("bitacora", () => {
   // Función para listar bitácoras en un rango de fechas
   const listarBitacorasXFecha = async (inicio, fin) => {
     try {
-      let r = await axios.get(`http://localhost:5037/api/Bitacoras/bitacora/${inicio}/${fin}`,
+      let r = await axios.get(`https://back-asistenciadespliegue.onrender.com/api/Bitacoras/bitacora/${inicio}/${fin}`,
         {headers:{
           "x-token":useUsuarios.xtoken
         }}
@@ -54,7 +54,7 @@ export const useBitacoraStore = defineStore("bitacora", () => {
   // Función para listar bitácoras por IdAprendis
   const listarXIdAprendis = async (IdAprendis, fechaInicio, fechaFin) => {
     try {
-      let r = await axios.get(`http://localhost:5037/api/Bitacoras/listarBitacora/${IdAprendis}/${fechaInicio}/${fechaFin}`,
+      let r = await axios.get(`https://back-asistenciadespliegue.onrender.com/api/Bitacoras/listarBitacora/${IdAprendis}/${fechaInicio}/${fechaFin}`,
 
         {headers:{
           "x-token":useUsuarios.xtoken
@@ -77,7 +77,7 @@ export const useBitacoraStore = defineStore("bitacora", () => {
   const listarXIdFicha = async (IdFicha, fechaInicio, fechaFin) => {
     try {
       let r = await axios.put(`
-        http://localhost:5037/api/Bitacoras/ListarbitacoraIdFicha/${IdFicha}/${fechaInicio}/${fechaFin}`,
+        https://back-asistenciadespliegue.onrender.com/api/Bitacoras/ListarbitacoraIdFicha/${IdFicha}/${fechaInicio}/${fechaFin}`,
 
         {headers:{
           "x-token":useUsuarios.xtoken
