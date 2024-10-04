@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Bitacora from "../models/bitacora.js";
-import Aprendices from "../models/aprendices.js";
+import Aprendices from "../models/Aprendices.js";
 import ficha from "../models/fichas.js";
 
 const httpBitacora = {
