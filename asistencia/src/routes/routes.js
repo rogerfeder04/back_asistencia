@@ -1,5 +1,3 @@
-
-
 import Home from '../components/Home.vue'               //principal
 import File from '../components/File.vue'               //ficha
 import Apprentice from '../components/Apprentice.vue'   //ruta aprendiz
@@ -8,8 +6,8 @@ import Binnacle from '../components/Binnacle.vue'       //bitacora
 import Login from '../components/Login.vue'             //login
 import ResetPassword from '../components/ResetPassword.vue'
 import ApprenticeLog from '../components/Apprenticelog.vue'  //ApprenticeLog
-// import ApprenticeLog from '../components/ApprenticeLog.vue'  
-
+import Informe from '../components/Informe.vue'  
+import ForgotPassword from '../components/ForgotPassword.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
@@ -18,18 +16,30 @@ const routes = [
         { path: '/aprendiz', component: Apprentice },
         { path: '/usuario', component: User },
         { path: '/bitacoras', component: Binnacle },
+        { path: '/informe', component: Informe },
     ]},
-    { path: '/reset-password', component: ResetPassword },
+
+    {
+        path: '/reset-password',
+        component: ResetPassword,
+         // Componente para restablecer la contraseña
+    },
+    // { path: '/ForgotPassword', component: ForgotPassword },
+    { 
+        path: '/ForgotPassword/:token', 
+        component: ForgotPassword, 
+        // Nueva ruta para restablecimiento con token
+    },
     { path: '/', component: Login },
     { path: '/ingreso', component: ApprenticeLog },  // Ruta para ingreso de aprendiz
     { path: '/', redirect: '/login' }
-
 ]
 
 export const router = createRouter({
     history: createWebHashHistory(),
     routes
 })
+
 
 
 

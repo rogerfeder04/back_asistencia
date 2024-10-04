@@ -3,7 +3,7 @@
     <q-card class="q-pa-lg q-mb-xl q-pa-sm q-card-responsive">
       <!-- Sección para el logo -->
       <q-card-section align="center" class="q-pb-none q-pt-none">
-        <img src="/src/assets/image/sena2.jpg" alt="logo" class="logo" />
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAGw03mi2-r-69jk5gvtp0hxTxIzzAXeLPRA&s" alt="logo" class="logo" />
       </q-card-section>
 
       <!-- Inputs de Email y Password -->

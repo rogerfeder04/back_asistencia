@@ -1,14 +1,15 @@
 <template>
-  <div style="background-color: white;"> <!-- Fondo blanco como en la imagen -->
+  <div style="background-color: white;">
     <div style="margin: 10px;">
       <div style="display:flex; justify-content: space-between; align-items: center;">
         <h2 style="color: #3a9a42; margin: 0;">Usuarios</h2>
         <q-btn 
-          @click="fixed = true" 
+          @click="abrirDialogoCrear" 
           color="green" 
           icon="add" 
           label="CREAR" 
-          text-color="white" 
+          text-color="white"
+          dense
         />
       </div>
       <q-table
@@ -18,13 +19,13 @@
         row-key="name"
         flat
         bordered
-        :dense="true"
+        dense
       >
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" align="center">
-            <q-btn @click="traerDatos(props.row)" color="green" icon="edit" size="sm"></q-btn>
-            <q-btn @click="activar(props.row._id)" v-if="props.row.estado==0" class="q-ml-sm" color="red" icon="cancel" size="sm"></q-btn>
-            <q-btn @click="activar(props.row._id)" v-else class="q-ml-sm" color="red" icon="cancel" size="sm"></q-btn>
+            <q-btn @click="traerDatos(props.row)" color="green" icon="edit" size="sm" dense></q-btn>
+            <q-btn @click="activar(props.row._id)" v-if="props.row.estado == 0" class="q-ml-sm" color="red" icon="cancel" size="sm" dense></q-btn>
+            <q-btn @click="activar(props.row._id)" v-else class="q-ml-sm" color="red" icon="cancel" size="sm" dense></q-btn>
           </q-td>
         </template>
         <template v-slot:body-cell-estado1="props">
@@ -47,35 +48,27 @@
         </template>
       </q-table>
       <q-dialog v-model="fixed" :backdrop-filter="'blur(4px) saturate(150%)'" transition-show="rotate" transition-hide="rotate" persistent>
-       
-       
-       
-        <q-card style="border: 2px solid #4CAF50; border-radius: 8px;">
-  <!-- Cabecera con fondo verde y texto centrado -->
-  <q-card-section class="bg-green text-white q-chip--colored q-chip--square">
-    <div class=" text-center text-h6">{{ b == true ? "Editar Usuario" : "Guardar Usuario" }}</div>
-  </q-card-section>
+        <q-card>
+          <q-card-section>
+            <div class="text-h6">{{ b ? "Editar Usuario" : "Guardar Usuario" }}</div>
+          </q-card-section>
 
-  <q-separator />
+          <q-separator />
 
-  <!-- Sección del formulario con iconos en los inputs -->
-  <q-card-section style="max-height: 50vh" class="scroll">
-    <q-input filled v-model="ema" label="Email usuario" :dense="dense" 
-             prepend-icon="email" />
-    <q-input filled v-model="nom" label="Nombre usuario" :dense="dense" 
-             prepend-icon="person" />
-  </q-card-section>
+          <q-card-section style="max-height: 50vh" class="scroll">
+            <q-input filled v-model="ema" label="Email usuario" dense />
+            <q-input filled v-model="nom" label="Nombre usuario" dense />
+            <!-- Solo muestra el campo de contraseña si estás creando un usuario nuevo -->
+            <q-input v-if="!b" filled v-model="pass" label="Contraseña" dense type="password" />
+          </q-card-section>
 
-  <q-separator />
+          <q-separator />
 
-  <!-- Botones con estilos personalizados -->
-  <q-card-actions align="right">
-    <q-btn flat label="Cerrar" color="grey-8" icon="cancel" v-close-popup @click="cerrar()" />
-    <q-btn flat label="Guardar" color="green-7" icon="save" @click="crearFicha()" />
-  </q-card-actions>
-</q-card>
-
-
+          <q-card-actions align="right">
+            <q-btn flat label="Cerrar" color="red" v-close-popup @click="cerrarDialogo" dense />
+            <q-btn flat label="Guardar" color="primary" @click="crearFicha" dense />
+          </q-card-actions>
+        </q-card>
       </q-dialog>
 
       <q-dialog v-model="confirm" persistent :backdrop-filter="'blur(4px) saturate(150%)'" transition-show="rotate" transition-hide="rotate">
@@ -85,8 +78,8 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat label="Cancelar" color="primary" v-close-popup />
-            <q-btn @click="eliminarFicha()" flat label="Aceptar" color="primary" v-close-popup />
+            <q-btn flat label="Cancelar" color="primary" v-close-popup dense />
+            <q-btn @click="eliminarFicha" flat label="Aceptar" color="primary" v-close-popup dense />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -95,97 +88,93 @@
   </div>
 </template>
 
-
 <script setup>
-import axios from "axios"
-import { onBeforeMount, ref, watch } from "vue";
-import { Notify } from 'quasar'
-import { useQuasar } from 'quasar'
-import {useUsuariosStore} from "../stores/usuarios.js"
-import { Dark } from 'quasar'
+import { ref, onBeforeMount, watch } from "vue";
+import { Notify, useQuasar, Dark } from 'quasar';
+import { useUsuariosStore } from "../stores/usuarios.js";
 
-const useUsuario = useUsuariosStore()
-
-
-const $q = useQuasar()
-let confirm = ref(false)
-let r = ref("")
-let fixed = ref(false)
-let ema = ref("")
-let nom = ref("")
-let error =ref("")
-let b = ref(false)
-let id = ref("")
-
-
-
+const useUsuario = useUsuariosStore();
+const $q = useQuasar();
+const confirm = ref(false);
+const fixed = ref(false);
+const ema = ref("");
+const nom = ref("");
+const pass = ref(""); // Nueva referencia para la contraseña
+const b = ref(false);
+const id = ref("");
 const isDark = ref(Dark.isActive);
+
 watch(isDark, (val) => {
   Dark.set(val);
 });
 
-const rows = ref([])
+const rows = ref([]);
 
-onBeforeMount(()=>{
-  traer()
-})
+onBeforeMount(() => {
+  traer();
+});
 
-function ides (ids){
-  id.value = ids
-  confirm.value = true
+function abrirDialogoCrear() {
+    // Limpiar los campos antes de abrir el diálogo
+  ema.value = ""; 
+  nom.value = ""; 
+  pass.value = ""; // Limpiar el campo de la contraseña
+
+  fixed.value = true;
+  b.value = false;
 }
 
-async function traer(){
-  let res = await useUsuario.listarUsuarios()
-  rows.value = res.data
+async function traer() {
+  let res = await useUsuario.listarUsuarios();
+  rows.value = res.data;
 }
 
-function traerDatos (datos){
-  id.value = datos._id
-  fixed.value = true
-  b.value=true
-  ema.value = datos.email
-  nom.value = datos.nombre
+function traerDatos(datos) {
+  id.value = datos._id;
+  fixed.value = true;
+  b.value = true;
+  ema.value = datos.email;
+  nom.value = datos.nombre;
 }
 
-function cerrar (){
-  b.value=false
-  ema.value = ""
-  nom.value = ""
+function cerrarDialogo() {
+  b.value = false;
+  ema.value = "";
+  nom.value = "";
+  pass.value = ""; // Limpiar la contraseña al cerrar
 }
 
-async function activar(id){
-  let res = await useUsuario.activarDesactivarUsuarios(id)
-   await traer()
+async function activar(id) {
+  let res = await useUsuario.activarDesactivarUsuarios(id);
+  await traer();
 }
 
-
-async function crearFicha(){
- if (b.value==true){
-   const res = await editarFicha(id)
-   if(res?.response?.data?.errors){
-     fixed.value=true
-   }else{
-     await traer()
-     fixed.value=false
-   }
- }else{
-
-   let res = await useUsuario.guardarFicha(ema.value, nom.value)
-   if(res?.response?.data?.errors){
-     fixed.value=true
-   }else{
-     await traer()
-    fixed.value=false
-   
-   } 
- }
+async function crearFicha() {
+  if (b.value === true) {
+    const res = await editarFicha();
+    if (res?.response?.data?.errors) {
+      fixed.value = true;
+    } else {
+      await traer();
+      fixed.value = false;
+    }
+  } else {
+    // Solo enviar la contraseña si se está creando un nuevo usuario
+    let res = await useUsuario.guardarFicha(ema.value, nom.value, pass.value);
+    if (res?.response?.data?.errors) {
+      fixed.value = true;
+    } else {
+      await traer();
+      fixed.value = false;
+    }
+  }
 }
 
-async function editarFicha(){
-  let res = await useUsuario.editarUsuario(id.value,  ema.value, nom.value)
-  await traer()
-  return res
+async function editarFicha() {
+  // No enviar la contraseña al editar el usuario
+  let res = await useUsuario.editarUsuario(id.value, ema.value, nom.value);
+  await traer();
+  return res;
 }
 
 const columns = ref([
@@ -198,41 +187,6 @@ const columns = ref([
   { name: 'codigo1', align: 'center', label: 'Email', field: 'email', sortable: true },
   { name: 'estado1', align: 'center', label: 'Estado', field: 'estado', sortable: true },
   { name: 'opciones', label: 'Opciones', align: 'center' },
-])
+]);
+
 </script>
-
-<style scoped>
-/* Estilos para la tabla y botones */
-.q-btn {
-  border-radius: 5px;
-  font-size: 14px;
-}
-
-.q-table {
-  border: 1px solid #ddd;
-  background-color: white;
-}
-
-.q-td {
-  padding: 8px;
-}
-
-.q-th, .q-td {
-  text-align: center;
-}
-
-.q-chip {
-  font-size: 12px;
-  text-transform: uppercase;
-}
-
-.q-toolbar-title {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-h2 {
-  font-size: 24px;
-  color: #3a9a42;
-}
-</style>

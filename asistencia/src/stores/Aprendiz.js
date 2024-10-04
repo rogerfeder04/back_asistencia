@@ -25,9 +25,18 @@ export const useAprendizStore = defineStore("aprendiz", () => {
     }
   };
 
+
+
+
+
+
   const listarXId = async () => {
     try {
-      let r = await axios.get(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/listar2/${id}`);
+      let r = await axios.get(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/listar2/${id}`,
+        {headers:{
+          "x-token":useUsuarios.xtoken
+          }}
+      );
       console.log(r);
       return r;
     } catch (error) {
@@ -39,7 +48,11 @@ export const useAprendizStore = defineStore("aprendiz", () => {
   const activarDesactivarAprendiz = async (id) => {
     console.log(id);
     try {
-      let r = await axios.put(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/activarDesactivar/${id}`);
+      let r = await axios.put(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/activarDesactivar/${id}`,
+        {headers:{
+          "x-token":useUsuarios.xtoken
+          }}
+      );
       console.log("Respuesta del servidor:", r);
   
       // Suponiendo que el mensaje indica si la ficha se activó o desactivó
@@ -81,6 +94,8 @@ export const useAprendizStore = defineStore("aprendiz", () => {
     }
   };
 
+ 
+
   const guardarAprendiz = async (num,doc,nom,ema,tel) => {
     console.log(num,doc,nom,ema,tel);
     
@@ -91,7 +106,10 @@ export const useAprendizStore = defineStore("aprendiz", () => {
         nombre: nom,
         email: ema,
         telefono: tel
-      });
+      },
+      {headers:{
+        "x-token":useUsuarios.xtoken
+        }});
 
       console.log(r);
       Notify.create({
@@ -119,7 +137,10 @@ export const useAprendizStore = defineStore("aprendiz", () => {
     console.log(id);
     try {
       let r = await axios.put(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/editarAprendiz/${id}`,
-      {IdFicha:num,cc: doc, nombre: nom, email: ema, telefono: tel}
+      {IdFicha:num,cc: doc, nombre: nom, email: ema, telefono: tel},
+      {headers:{
+        "x-token":useUsuarios.xtoken
+        }}
       );
       console.log(r);
       Notify.create({
@@ -143,7 +164,11 @@ export const useAprendizStore = defineStore("aprendiz", () => {
 
   const eliminar = async (id) =>{
     try {
-      let r = await axios.delete(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/Eliminar/${id}`);
+      let r = await axios.delete(`https://back-asistenciadespliegue.onrender.com/api/Aprendices/Eliminar/${id}`,
+        {headers:{
+          "x-token":useUsuarios.xtoken
+          }}
+      );
       console.log(r);
       Notify.create({
         color: "positive",
@@ -165,6 +190,7 @@ export const useAprendizStore = defineStore("aprendiz", () => {
   }
 
   return {
+    token,
     listarAprendices,
     listarXId,
     guardarAprendiz,

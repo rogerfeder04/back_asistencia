@@ -1,44 +1,86 @@
 <template>
-  <div style="background-color: white;"> <!-- Fondo blanco -->
+  <div style="background-color: white;">
     <div style="margin: 10px;">
-      <!-- Filtros -->
-      <q-select
-        v-model="tipoFiltro"
-        :options="filtroOptions"
-        label="Selecciona tipo de filtro"
-        style="width: 300px; margin-bottom: 20px;"
-        emit-value
-      />
-      <q-input
-        v-show="tipoFiltro === 'porAprendis'"
-        v-model="idAprendis"
-        label="IdAprendis"
-        style="margin-bottom: 20px; width: 200px;" 
-      />
-      <q-input
-         v-show="tipoFiltro === 'porFicha'"
-        v-model="idFicha"
-        label="IdFicha"
-        style="margin-bottom: 20px; width: 200px;" 
-      />
-      
-      <!-- Campos de fechas más pequeños -->
-      <div style="display: flex; gap: 10px;">
-        <q-input 
-          v-model="fechaInicio" 
-          label="Fecha Inicio" 
-          type="date" 
-          style="margin-bottom: 20px; width: 150px;" 
+      <!-- Contenedor general con flex -->
+      <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+        
+        <!-- Filtro tipo de filtro -->
+        <q-select
+          v-model="tipoFiltro"
+          :options="filtroOptions"
+          label="Selecciona tipo de filtro"
+          style="width: 300px;"
+          emit-value
         />
-        <q-input 
-          v-model="fechaFin" 
-          label="Fecha Fin" 
-          type="date" 
-          style="margin-bottom: 20px; width: 150px;" 
+
+        <!-- Filtro por Aprendiz -->
+        <q-select
+          v-show="tipoFiltro === 'porAprendis'"
+          v-model="aprendizSeleccionado"
+          :options="aprendicesOptions"
+          label="Selecciona un aprendiz"
+          style="width: 300px;"
+          emit-value
+          option-label="nombre"
+          option-value="_id"
+          use-input
+          @filter="filtrarAprendices"
+          map-options
         />
+
+        <!-- Filtro por Ficha -->
+        <q-select
+          v-show="tipoFiltro === 'porFicha'"
+          v-model="fichaSeleccionada"
+          :options="fichasOptions"
+          label="Selecciona una ficha"
+          style="width: 300px;"
+          emit-value
+          option-label="nombre"
+          option-value="_id"
+          use-input
+          @filter="filtrarFichas"
+          map-options
+        />
+
+        <!-- Campos de fecha -->
+        <q-input
+          v-model="fechaInicio"
+          label="Fecha Inicio"
+          type="date"
+          style="width: 150px;"
+        />
+        
+        <q-input
+          v-model="fechaFin"
+          label="Fecha Fin"
+          type="date"
+          style="width: 150px;"
+        />
+
+        <!-- Botones en línea -->
+        <div style="display: flex; gap: 10px;">
+          <!-- Botón Filtrar -->
+          <q-btn
+            @click="obtenerBitacoras"
+            color="green-8"
+            style="border-radius: 8px; min-width: 120px; height: 40px;"
+            icon="add"
+          >
+            <span>Filtrar</span>
+          </q-btn>
+
+          <!-- Botón Descargar PDF -->
+          <q-btn
+            @click="generarPDF"
+            color="green-8"
+            style="border-radius: 8px; min-width: 120px; height: 40px;"
+            icon="file_download"
+          >
+            <span>DESCARGAR PDF</span>
+          </q-btn>
+        </div>
       </div>
-      
-      <q-btn @click="obtenerBitacoras" label="Filtrar" color="primary" />
 
       <!-- Spinner -->
       <div v-if="isLoading" class="q-pa-md">
@@ -47,7 +89,7 @@
 
       <!-- Tabla -->
       <q-table
-        v-if="!isLoading"
+        v-if="!isLoading && rows.length > 0"
         title="Bitácoras"
         :rows="rows"
         :columns="columns"
@@ -71,9 +113,15 @@
           </q-td>
         </template>
       </q-table>
+
+      <!-- Mostrar mensaje cuando no hay resultados -->
+      <div v-if="!isLoading && rows.length === 0" class="q-pa-md">
+        <p>No se encontraron bitácoras.</p>
+      </div>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onBeforeMount, watch } from 'vue';
@@ -83,24 +131,23 @@ import { Notify, useQuasar, Dark } from 'quasar';
 const bitacoraStore = useBitacoraStore();
 const $q = useQuasar();
 const isDark = ref(Dark.isActive);
-const isLoading = ref(false);  // Nuevo estado de carga
+const isLoading = ref(false);
+
 watch(isDark, (val) => {
   Dark.set(val);
 });
 
-
-
-const tipoFiltro = ref('todas');
+const tipoFiltro = ref('');
 const fechaInicio = ref('');
 const fechaFin = ref('');
-const idAprendis = ref('');
-const idFicha = ref('');
+const aprendizSeleccionado = ref('');
+const fichaSeleccionada = ref('');
 const rows = ref([]);
 
 const filtroOptions = [
   { label: 'Todas las Bitácoras', value: 'todas' },
-  { label: 'Por IdAprendis', value: 'porAprendis' },
-  { label: 'Por IdFicha', value: 'porFicha' }
+  { label: 'Por Aprendiz', value: 'porAprendis' },
+  { label: 'Por Ficha', value: 'porFicha' }
 ];
 
 const estadoOptions = ref([
@@ -114,75 +161,105 @@ const columns = ref([
   { name: 'fecha', required: true, label: 'Fecha', align: 'center', field: row => row.fecha, format: val => new Date(val).toLocaleDateString(), sortable: true },
   { name: 'nombre', align: 'center', label: 'Nombre del Aprendiz', field: row => row.IdAprendis?.nombre || '', sortable: true },
   { name: 'cc', align: 'center', label: 'CC', field: row => row.IdAprendis?.cc || '', sortable: true },
-  { name: 'idficha', align: 'center', label: 'IdFicha', field: row => row.IdAprendis?.IdFicha.nombre || '', sortable: true },
+  { name: 'idficha', align: 'center', label: 'Ficha', field: row => row.IdAprendis?.IdFicha?.nombre || '', sortable: true },
   { name: 'estado', align: 'center', label: 'Estado', field: 'estado', sortable: true }
 ]);
 
-onBeforeMount(() => {
-  obtenerBitacoras();
+const aprendicesOptions = ref([]);
+const fichasOptions = ref([]);
+
+// Cargar aprendices y fichas al montar el componente
+onBeforeMount(async () => {
+  await cargarAprendices();
+  await cargarFichas();
+  obtenerBitacoras(); // Cargar todas las bitácoras al inicio
 });
 
+// Cargar aprendices
+async function cargarAprendices() {
+  try {
+    const aprendices = await bitacoraStore.obtenerAprendices();
+    aprendicesOptions.value = aprendices.map(aprendiz => ({
+      nombre: aprendiz.nombre,
+      _id: aprendiz._id
+    }));
+  } catch (error) {
+    console.error('Error al cargar aprendices:', error);
+  }
+}
+
+// Cargar fichas
+async function cargarFichas() {
+  try {
+    const fichas = await bitacoraStore.obtenerFichas();
+    fichasOptions.value = fichas.map(ficha => ({
+      nombre: ficha.nombre,
+      _id: ficha._id
+    }));
+  } catch (error) {
+    console.error('Error al cargar fichas:', error);
+  }
+}
+
+// Función para filtrar aprendices mientras se escribe
+function filtrarAprendices(val, update) {
+  update(() => {
+    const filtro = val.toLowerCase();
+    aprendicesOptions.value = aprendicesOptions.value.filter(aprendiz => aprendiz.nombre.toLowerCase().includes(filtro));
+  });
+}
+
+// Función para filtrar fichas mientras se escribe
+function filtrarFichas(val, update) {
+  update(() => {
+    const filtro = val.toLowerCase();
+    fichasOptions.value = fichasOptions.value.filter(ficha => ficha.nombre.toLowerCase().includes(filtro));
+  });
+}
+
+// Función para obtener bitácoras filtradas
 async function obtenerBitacoras() {
   try {
-    // Activar el spinner
     isLoading.value = true;
+    let response;
 
-    // Verificar que las fechas no estén vacías
-    if (!fechaInicio.value || !fechaFin.value) {
-      Notify.create({
-        message: 'Por favor, ingresa un rango de fechas válido.',
-        color: 'negative',
-      });
+    const fechaInicioISO = fechaInicio.value ? new Date(fechaInicio.value).toISOString().split('T')[0] : null;
+    const fechaFinISO = fechaFin.value ? new Date(fechaFin.value).toISOString().split('T')[0] : fechaInicioISO;
+
+    if (!fechaInicioISO) {
+      Notify.create({ message: 'Por favor, ingresa una fecha de inicio.', color: 'negative' });
       isLoading.value = false;
       return;
     }
 
-    let response;
     if (tipoFiltro.value === 'todas') {
-      response = await bitacoraStore.listarBitacorasXFecha(fechaInicio.value, fechaFin.value);
+      response = await bitacoraStore.listarBitacorasXFecha(fechaInicioISO, fechaFinISO);
     } else if (tipoFiltro.value === 'porAprendis') {
-      if (!idAprendis.value) {  
-        Notify.create({
-          message: 'Por favor, ingresa un IdAprendis válido.',
-          color: 'negative',
-        });
+      if (!aprendizSeleccionado.value) {
+        Notify.create({ message: 'Selecciona un aprendiz.', color: 'negative' });
         isLoading.value = false;
         return;
       }
-      response = await bitacoraStore.listarXIdAprendis(idAprendis.value, fechaInicio.value, fechaFin.value);
+      response = await bitacoraStore.listarXIdAprendis(aprendizSeleccionado.value, fechaInicioISO, fechaFinISO);
     } else if (tipoFiltro.value === 'porFicha') {
-      if (!idFicha.value) {
-        Notify.create({
-          message: 'Por favor, ingresa un IdFicha válido.',
-          color: 'negative',
-        });
+      if (!fichaSeleccionada.value) {
+        Notify.create({ message: 'Selecciona una ficha.', color: 'negative' });
         isLoading.value = false;
         return;
       }
-      response = await bitacoraStore.listarXIdFicha(idFicha.value, fechaInicio.value, fechaFin.value);
+      response = await bitacoraStore.listarXIdFicha(fichaSeleccionada.value, fechaInicioISO, fechaFinISO);
     }
 
-    // Asegurarse de que response sea un arreglo
-    if (Array.isArray(response)) {
-      rows.value = response.map(bitacora => ({
-        ...bitacora,
-        estado: bitacora.estado || 'pendiente'  // Asegúrate de inicializar el estado si no está presente
-      }));
+    if (Array.isArray(response) && response.length > 0) {
+      rows.value = response;
     } else {
       rows.value = [];
-      Notify.create({
-        message: 'No se encontraron bitácoras.',
-        color: 'negative',
-      });
+      Notify.create({ message: 'No se encontraron bitácoras.', color: 'negative' });
     }
   } catch (error) {
     console.error('Error al obtener las bitácoras:', error);
-    Notify.create({
-      message: 'Ocurrió un error al obtener las bitácoras.',
-      color: 'negative',
-    });
+    Notify.create({ message: 'Error al obtener las bitácoras.', color: 'negative' });
   } finally {
-    // Desactivar el spinner
     isLoading.value = false;
   }
 }
@@ -190,21 +267,52 @@ async function obtenerBitacoras() {
 async function actualizarEstado(id, nuevoEstado) {
   try {
     const res = await bitacoraStore.actualizarEstado(id, nuevoEstado);
-    Notify.create({
-      message: 'Estado actualizado correctamente.',
-      color: 'positive',
-    });
+    Notify.create({ message: 'Estado actualizado correctamente.', color: 'positive' });
     console.log("Estado actualizado:", res.data);
   } catch (error) {
     console.error("Error al actualizar el estado:", error);
-    Notify.create({
-      message: 'Error al actualizar el estado.',
-      color: 'negative',
-    });
-  }
+    Notify.create({ message: 'Error al actualizar el estado.', color: 'negative' });
+  }
+}
+</script>
+
+<style scoped>
+/* Estilos personalizados para los inputs */
+.q-input, .q-select {
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-watch(tipoFiltro, (val) => {
-  console.log("Valor de tipoFiltro:", val);
-});
-</script>
+.q-input input, .q-select input {
+  padding: 12px;
+}
+
+.q-btn.btn-styled {
+  background-color: #2F7D32;
+  color: white;
+  border-radius: 25px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 10px 20px;
+  font-weight: bold;
+}
+
+.q-btn.btn-styled:hover {
+  background-color: #256b28;
+}
+
+/* Estilos adicionales para hacer el diseño más elegante */
+.q-table {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.q-select {
+  transition: all 0.3s ease;
+}
+
+.q-select:hover {
+  transform: translateY(-2px);
+}
+
+</style>

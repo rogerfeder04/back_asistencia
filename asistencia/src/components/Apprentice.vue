@@ -230,28 +230,7 @@ async function crearFicha() {
 }
 
 
-/* async function editarAprendiz() {
-  try {
-    let res = await useAprendiz.editarAprendiz(
-      id.value,
-      IdFicha,  // Enviar el IdFicha correcto al backend
-      doc.value,
-      nom.value,
-      ema.value,
-      tel.value
-    );
-    await traer(); // Actualiza la lista después de editar
-    return res;
-  } catch (error) {
-    console.error('Error al editar el aprendiz:', error);
-    // Manejo de errores, puedes mostrar una notificación o mensaje de error aquí
-  }
-} */
-//  async function eliminarAprendiz(){
-//    let res = await useAprendiz.eliminar(id.value)
-//    await traer()
-//    return res
-//  }
+
 
 const columns = ref([
   {
