@@ -151,4 +151,5 @@ function togglePasswordVisibility() {
   height: auto;
   margin-bottom: 10px;
 }
+
 </style>

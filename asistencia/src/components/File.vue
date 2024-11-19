@@ -178,10 +178,21 @@ async function editarFicha() {
 }
 
 const columns = ref([
-  { name: 'nombre1', required: true, label: 'Nombre del programa', align: 'center', field: "nombre", sortable: true },
-  { name: 'codigo1', align: 'center', label: 'Numero de ficha', field: 'codigo', sortable: true },
-  { name: 'estado1', align: 'center', label: 'Estado', field: 'estado', sortable: true },
-  { name: 'opciones', label: 'Opciones', align: 'center' },
+  { name: 'nombre1', required: true, label: 'Nombre del programa', align: 'center', field: "nombre", sortable: true,
+  headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px"
+   },
+  { name: 'codigo1', align: 'center', label: 'Numero de ficha', field: 'codigo', sortable: true,
+    headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+    style:"font-size:16px"
+  },
+  { name: 'estado1', align: 'center', label: 'Estado', field: 'estado', sortable: true,
+    headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+    
+   },
+  { name: 'opciones', label: 'Opciones', align: 'center',
+    headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;'
+   },
 ]);
 </script>
 
@@ -219,4 +230,5 @@ h2 {
   font-size: 24px;
   color: #3a9a42;
 }
+
 </style>

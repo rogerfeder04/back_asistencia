@@ -28,7 +28,7 @@
               @click="traerDatos(props.row)" 
               color="green" 
               icon="edit" 
-              size="sm" 
+              size="" 
               dense
             />
             <q-btn 
@@ -36,7 +36,7 @@
               class="q-ml-sm" 
               :color="props.row.estado === 1 ? 'red' : 'green'" 
               :icon="props.row.estado === 1 ? 'cancel' : 'check_circle'" 
-              size="sm" 
+              size="" 
               dense
             />
           </q-td>
@@ -235,11 +235,22 @@ const columns = ref([
     name: 'nombre1', required: true, label: 'Nombre usuario',
     align: 'center',
     field: "nombre",
+     headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
     sortable: true
   },
-  { name: 'codigo1', align: 'center', label: 'Email', field: 'email', sortable: true },
-  { name: 'estado1', align: 'center', label: 'Estado', field: 'estado', sortable: true },
-  { name: 'opciones', label: 'Opciones', align: 'center' },
+  { name: 'codigo1',
+   headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+  align: 'center', label: 'Email', field: 'email', sortable: true },
+  { name: 'estado1', 
+   headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+  align: 'center', label: 'Estado', field: 'estado', sortable: true },
+  { name: 'opciones',
+  headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+  label: 'Opciones', align: 'center' },
 ]);
 
 </script>

@@ -89,12 +89,39 @@ const fecha = ref('');
 
 // Definir las columnas de la tabla
 const columns = ref([
-  { name: 'fecha', label: 'Fecha', field: 'fecha', align: 'left', sortable: true, format: val => new Date(val).toLocaleDateString() },
-  { name: 'hora', label: 'Hora de Creación', field: 'createdAt', align: 'left', sortable: true, format: val => new Date(val).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
-  { name: 'nombre', label: 'Nombre Aprendiz', field: row => row.IdAprendis?.nombre || 'Desconocido', align: 'left', sortable: true },
-  { name: 'cc', label: 'CC', field: row => row.IdAprendis?.cc || 'Desconocido', align: 'left', sortable: true },
-  { name: 'IdFicha', label: 'IdFicha', field: row => row.IdAprendis?.IdFicha.nombre || 'No asignada', align: 'left', sortable: true },
-  { name: 'estado', label: 'Estado', field: 'estado', align: 'left', sortable: true }
+  { name: 'fecha', label: 'Fecha', 
+  headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",align: 'center',
+  field: 'fecha', align: 'center', sortable: true, format: val => new Date(val).toLocaleDateString() },
+  { name: 'hora',
+   headerStyle: 'font-size: 10px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+   label: 'Hora de Creación',
+    headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+    field: 'createdAt', align: 'center', sortable: true, format: val => new Date(val).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
+  { name: 'nombre',
+   headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+  label: 'Nombre Aprendiz',
+   headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+  field: row => row.IdAprendis?.nombre || 'Desconocido', align: 'center', sortable: true },
+  { name: 'cc',
+   headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+  label: 'CC', field: row => row.IdAprendis?.cc || 'Desconocido', align: 'center', sortable: true },
+  { name: 'IdFicha',
+   headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+  label: 'IdFicha',
+   headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+  field: row => row.IdAprendis?.IdFicha.nombre || 'No asignada', align: 'center', sortable: true },
+  { name: 'estado',
+   headerStyle: 'font-size: 18px; font-weight: bold; color: #3a9a42; background-color: #f5f5f5; text-align: center;',
+  style:"font-size:16px",
+  label: 'Estado', field: 'estado', align: 'center', sortable: true }
 ]);
 
 // Opciones de fichas (serán cargadas desde la API)
